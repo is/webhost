@@ -1,0 +1,10 @@
+#!/bin/sh
+
+docker run -d --name pw \
+--hostname pw --add-host gw:172.18.0.1 --ipc=host \
+--env-file _env -e PATH=$PATH:$(pwd):. \
+-v $(pwd)/entrypoint:/usr/bin/entrypoint \
+-v /workspace:/workspace \
+-v /tmp:/tmp -v /root:/root -w $(pwd) \
+pw \
+entrypoint

@@ -1,6 +1,17 @@
 from playwright.sync_api import sync_playwright
+import sys
 import os
 import requests
+
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,  # 日志级别设为 DEBUG，捕获所有细节
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+# 重点关注 playwright 相关日志（过滤无关输出）
+logger = logging.getLogger("playwright")
+logger.setLevel(logging.DEBUG)
 
 def send_telegram_message(message):
     bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
@@ -17,6 +28,7 @@ def send_telegram_message(message):
 def login_webhostmost(email, password):
     with sync_playwright() as p:
         browser = p.firefox.launch(headless=True)
+        # browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
         # 访问登录页面
@@ -30,6 +42,7 @@ def login_webhostmost(email, password):
     
         # 点击登录按钮
         page.get_by_role("button", name="Login").click()
+        print(f'click login {email} ...')
 
         # 等待可能出现的错误消息或成功登录后的页面
         try:
@@ -43,7 +56,9 @@ def login_webhostmost(email, password):
             try:
                 page.wait_for_url("https://client.webhostmost.com/clientarea.php", timeout=5000)
                 return f"账号 {email} 登录成功!"
-            except:
+            except Exception as e:
+                if page.url == 'https://client.webhostmost.com/clientarea.php':
+                    return f"账号 {email} 登录成功!"
                 return f"账号 {email} 登录失败: 未能跳转到仪表板页面"
         finally:
             browser.close()

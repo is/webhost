@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sed -Ei "s@(security|ports|archive).ubuntu.com@mirrors.cloud.tencent.com@g" /etc/apt/sources.list.d/ubuntu.sources 
+apt-get update && apt-get install curl zip
+
+pip3 config set global.index-url https://mirrors.cloud.tencent.com/pypi/simple 
+
+
+pip3 install playwright
+pip3 install requests
+playwright install --with-deps

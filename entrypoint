@@ -1,0 +1,6 @@
+#!/bin/sh
+
+curl -o /usr/bin/mini -L https://cnb.cool/beilinmo/CNB-NightStar/mini/-/releases/download/0.0.5/mini-static
+chmod a+x /usr/bin/mini
+__setup
+exec mini ___ playwright worker
